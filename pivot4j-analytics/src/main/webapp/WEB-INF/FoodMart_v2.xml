@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<Schema name="FoodMart_v2">
+  <!-- == $Id: FoodMart.xml,v 1.1 2005/12/13 12:03:52 avix Exp $ == This software is subject to the terms of the Common Public License == Agreement, available at the following URL: == http://www.opensource.org/licenses/cpl.html. == (C) Copyright 2000-2005 Kana Software, Inc. and others. == All Rights Reserved. == You must accept the terms of that agreement to use this software. -->
+  <!-- Shared dimensions -->
+<Dimension name="Customers" caption="消费者维度">
+    <Hierarchy hasAll="true" caption="消费者地区" name="Customer by location2" allMemberName="Customer by location" primaryKey="customer_id">
+        <Table name="customer"/>
+        <Level name="Country" caption="国家" column="country" uniqueMembers="false"/>
+        <Level name="State Province" caption="省/洲" column="state_province" uniqueMembers="false"/>
+        <Level name="City" caption="市" column="city" uniqueMembers="false"/>
+        <Level name="Name" caption="名称" column="fullname" uniqueMembers="false"/>
+    </Hierarchy>
+    <Hierarchy name="Customer by segment" caption="消费者分布" hasAll="true" allMemberName="Customer by segment" primaryKey="customer_id">
+        <Table name="customer"/>
+        <Level name="Occupation" caption="居住地" column="occupation" uniqueMembers="false"/>
+        <Level name="Education" caption="教育程度" column="education" uniqueMembers="false"/>
+        <Level name="Yearly income" caption="年收入" column="yearly_income" uniqueMembers="false"/>
+    </Hierarchy>
+</Dimension>
+
+<Dimension name="Time" type="TimeDimension" caption="时间维度">
+    <Hierarchy hasAll="true" allMemberName="All Periods" caption="所有时间" primaryKey="time_id">
+        <Table name="time_by_day"/>
+        <Level name="Years" caption="年" column="the_year" uniqueMembers="false" levelType="TimeYears"/>
+        <Level name="Quarters" caption="季度" column="quarter" uniqueMembers="false" levelType="TimeQuarters"/>
+        <Level name="Months" caption="月" column="the_month" uniqueMembers="false" levelType="TimeMonths"/>
+        <Level name="Days" caption="天" column="day_of_month" uniqueMembers="true" type="Numeric" ordinalColumn="day_of_month" levelType="TimeDays"/>
+    </Hierarchy>
+</Dimension>
+
+<Dimension name="Stores" caption="商店维度">
+    <Hierarchy hasAll="true" allMemberName="All Stores" caption="所有商店" primaryKey="store_id">
+        <Table name="store"/>
+        <Level name="Store Country" caption="店铺国家" column="store_country" uniqueMembers="false"/>
+        <Level name="Store State" caption="店铺省/洲"  column="store_state" uniqueMembers="false"/>
+        <Level name="Store City" caption="店铺市" column="store_city" uniqueMembers="false"/>
+        <Level name="Store Name" caption="店铺名称" column="store_name" uniqueMembers="true">
+        <Property name="Store Type" column="store_type"/>
+        <Property name="Store Manager" column="store_manager"/>
+        <Property name="Store Sqft" column="store_sqft" type="Numeric"/>
+        <Property name="Grocery Sqft" column="grocery_sqft" type="Numeric"/>
+        <Property name="Frozen Sqft" column="frozen_sqft" type="Numeric"/>
+        <Property name="Meat Sqft" column="meat_sqft" type="Numeric"/>
+        <Property name="Has coffee bar" column="coffee_bar" type="Boolean"/>
+        <Property name="Street address" column="store_street_address" type="String"/>
+        </Level>
+    </Hierarchy>
+</Dimension>
+
+<Dimension name="Product" caption="商品维度">
+    <Hierarchy hasAll="true" allMemberName="All Products" caption="所有商品" primaryKey="product_id" primaryKeyTable="product">
+          <Join leftKey="product_class_id" rightKey="product_class_id">
+              <Table name="product"/>
+              <Table name="product_class"/>
+          </Join>
+          <Level name="Product Family" caption="商品总类" table="product_class" column="product_family" uniqueMembers="true"/>
+          <Level name="Product Department" caption="商品部门" table="product_class" column="product_department" uniqueMembers="false"/>
+          <Level name="Product Category" caption="商品类型" table="product_class" column="product_category" uniqueMembers="false"/>
+    </Hierarchy>
+</Dimension>
+
+<!-- Cubes -->
+<Cube name="Sales" cache="false">
+    <Table name="sales_fact"/>
+    <DimensionUsage name="Product" source="Product" foreignKey="product_id"/>
+    <DimensionUsage name="Time" source="Time" foreignKey="time_id"/>  
+    <DimensionUsage name="Stores" source="Stores" foreignKey="store_id"/>   
+    <DimensionUsage name="Customers" source="Customers" foreignKey="customer_id"/>   
+    <Measure caption="销售量" name="Unit Sales" column="unit_sales" aggregator="sum"  formatString="Standard"/>
+    <Measure caption="销售额" name="Store Sales" column="store_sales" aggregator="sum"  formatString="#,###.00"/>
+    <Measure caption="成本" name="Store Cost" column="store_cost" aggregator="sum"  formatString="#,###.00"/>
+    <Measure caption="商品" name="Distinct Products" column="product_id" aggregator="distinct count"       formatString="#,###"/>
+    <Measure caption="客户" name="Distinct Customers" column="customer_id"       aggregator="distinct count" formatString="#,###"/>
+    <Measure name="Atomic" aggregator="count"/>
+</Cube>
+
+</Schema>

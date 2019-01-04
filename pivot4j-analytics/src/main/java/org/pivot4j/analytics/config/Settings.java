@@ -250,7 +250,8 @@ public class Settings {
 	public String getTheme() {
 		if (theme == null) {
 			this.theme = configuration.getString(
-					"appearances.ui-theme.default", "redmond").trim();
+//					"appearances.ui-theme.default", "redmond").trim();
+					"appearances.ui-theme.default", "aristo").trim();
 		}
 
 		return theme;

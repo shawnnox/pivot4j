@@ -11,8 +11,40 @@
 
 			http://www.olap4j.org/
 		-->
+		<!--<datasource>-->
+			<!--<name>FoodMart Mondrian</name>-->
+			<!--<description>FoodMart sample data source.</description>-->
+
+			<!--<connection-info>-->
+				<!--<url>jdbc:mondrian:</url>-->
+				<!--<driverClass>mondrian.olap4j.MondrianOlap4jDriver</driverClass>-->
+
+				<!--&lt;!&ndash;-->
+					<!--You can use several predefined variables to reference well known file-->
+					<!--system locations.-->
+
+					<!--For example, '${webRoot}' is the 'WEB-INF' directory of the current web-->
+					<!--application context.-->
+
+					<!--And '${userHome}' refers to the home directory of the user on whose-->
+					<!--account the application server is running.-->
+
+					<!--Finally, '${appHome}' referes to the application home directory, which-->
+					<!--is defined as '${userHome}.pivot4j' by default.-->
+
+					<!--You can also use '${FS}' to denote the OS specific file separator character.-->
+				<!--&ndash;&gt;-->
+				<!--<properties>-->
+					<!--<property name="Catalog">file:${webRoot}${FS}FoodMart.xml</property>-->
+					<!--<property name="Jdbc">jdbc:derby:${webRoot}${FS}foodmart</property>-->
+					<!--<property name="JdbcDrivers">org.apache.derby.jdbc.EmbeddedDriver</property>-->
+					<!--<property name="JdbcUser">sa</property>-->
+				<!--</properties>-->
+			<!--</connection-info>-->
+		<!--</datasource>-->
+
 		<datasource>
-			<name>FoodMart Mondrian</name>
+			<name>FoodMart2</name>
 			<description>FoodMart sample data source.</description>
 
 			<connection-info>
@@ -20,25 +52,26 @@
 				<driverClass>mondrian.olap4j.MondrianOlap4jDriver</driverClass>
 
 				<!--
-					You can use several predefined variables to reference well known file 
+					You can use several predefined variables to reference well known file
 					system locations.
 
-					For example, '${webRoot}' is the 'WEB-INF' directory of the current web 
+					For example, '${webRoot}' is the 'WEB-INF' directory of the current web
 					application context.
 
-					And '${userHome}' refers to the home directory of the user on whose 
+					And '${userHome}' refers to the home directory of the user on whose
 					account the application server is running.
 
-					Finally, '${appHome}' referes to the application home directory, which 
+					Finally, '${appHome}' referes to the application home directory, which
 					is defined as '${userHome}.pivot4j' by default.
 
 					You can also use '${FS}' to denote the OS specific file separator character.
 				-->
 				<properties>
-					<property name="Catalog">file:${webRoot}${FS}FoodMart.xml</property>
-					<property name="Jdbc">jdbc:derby:${webRoot}${FS}foodmart</property>
-					<property name="JdbcDrivers">org.apache.derby.jdbc.EmbeddedDriver</property>
-					<property name="JdbcUser">sa</property>
+					<property name="Catalog">file:${webRoot}${FS}FoodMart_v2.xml</property>
+					<property name="Jdbc">jdbc:mysql://127.0.0.1:3306/foodmart_demo</property>
+					<property name="JdbcDrivers">com.mysql.jdbc.Driver</property>
+					<property name="JdbcUser">root</property>
+					<property name="JdbcPassword">123456</property>
 				</properties>
 			</connection-info>
 		</datasource>
@@ -73,7 +106,7 @@
 			http://www.primefaces.org/themes.html
 		-->
 		<ui-theme>
-			<default>redmond</default>
+			<default>aristo</default>
 			<available-themes>
 				<theme name="aristo" description="Aristo" />
 				<theme name="bootstrap" description="Bootstrap" />

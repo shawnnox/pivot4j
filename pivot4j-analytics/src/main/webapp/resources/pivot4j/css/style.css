@@ -249,6 +249,7 @@ body.report .pe-layout-pane-header {
 #grid-header-pane {
 	padding: 2px;
 	overflow: hidden;
+	display: none !important;
 }
 
 #content-pane .ui-layout-content {
@@ -300,7 +301,7 @@ body.report .pe-layout-pane-header {
 }
 
 .pivot-grid {
-	margin-bottom: 10px;
+	margin: 20px;
 }
 
 .filter-grid  {
@@ -714,6 +715,9 @@ body.ie-compat .ui-toolbar .ui-separator {
 .migration-dialog .ui-layout-resizer {
 	display: none !important;
 }
+.ui-layout-resizer{
+	display: none !important;
+}
 
 .migration-dialog .ui-layout-pane-center {
 	width: auto !important;
@@ -725,4 +729,15 @@ body.ie-compat .ui-toolbar .ui-separator {
 
 .wrap {
 	white-space: normal !important;
+}
+.ui-icon-close{
+	display: none;
+}
+
+.filterTestClass{
+	display:none;
+}
+
+#grid-form:pivot-grid table{
+	margin: 20px;
 }

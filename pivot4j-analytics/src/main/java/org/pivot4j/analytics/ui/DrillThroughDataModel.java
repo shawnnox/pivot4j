@@ -1,5 +1,6 @@
 package org.pivot4j.analytics.ui;
 
+import java.io.Serializable;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -26,7 +27,7 @@ import org.primefaces.model.SortOrder;
 
 @ManagedBean(name = "drillThroughData")
 @ViewScoped
-public class DrillThroughDataModel extends LazyDataModel<Map<String, Object>> {
+public class DrillThroughDataModel extends LazyDataModel<Map<String, Object>> implements Serializable {
 
 	private static final long serialVersionUID = 2554173601960871316L;
 

@@ -394,14 +394,17 @@ public class ViewHandler implements QueryListener, ModelChangeListener {
             LayoutOptions toolbarOptions = new LayoutOptions();
             toolbarOptions.addOption("resizable", false);
             toolbarOptions.addOption("closable", false);
+            toolbarOptions.addOption("slidable", false);
 
             layoutOptions.setNorthOptions(toolbarOptions);
 
+            //报表仓库Pane
             LayoutOptions navigatorOptions = new LayoutOptions();
-            navigatorOptions.addOption("resizable", true);
-            navigatorOptions.addOption("closable", true);
-            navigatorOptions.addOption("slidable", true);
-            navigatorOptions.addOption("size", 280);
+            navigatorOptions.addOption("resizable", false);
+            navigatorOptions.addOption("closable", false);
+            navigatorOptions.addOption("slidable", false);
+            navigatorOptions.addOption("initClosed", true);
+            navigatorOptions.addOption("size", 0);
 
             if (!view.isRegionVisible(LayoutRegion.Navigator)) {
                 navigatorOptions.addOption("initClosed", true);
@@ -411,6 +414,7 @@ public class ViewHandler implements QueryListener, ModelChangeListener {
 
             LayoutOptions childWestOptions = new LayoutOptions();
             navigatorOptions.setChildOptions(childWestOptions);
+
 
             LayoutOptions cubeListOptions = new LayoutOptions();
             cubeListOptions.addOption("resizable", false);
@@ -435,11 +439,13 @@ public class ViewHandler implements QueryListener, ModelChangeListener {
             childCenterOptions.addOption("onresize_end", "onViewResize");
             contentOptions.setChildOptions(childCenterOptions);
 
+            //过滤Pane
             LayoutOptions filterOptions = new LayoutOptions();
             filterOptions.addOption("resizable", false);
-            filterOptions.addOption("closable", true);
-            filterOptions.addOption("slidable", true);
-            filterOptions.addOption("size", 38);
+            filterOptions.addOption("closable", false);
+            filterOptions.addOption("slidable", false);
+            filterOptions.addOption("rendered", false);
+            filterOptions.addOption("size", 0);
 
             if (!view.isRegionVisible(LayoutRegion.Filter)) {
                 filterOptions.addOption("initClosed", true);
@@ -448,10 +454,10 @@ public class ViewHandler implements QueryListener, ModelChangeListener {
             childCenterOptions.setNorthOptions(filterOptions);
 
             LayoutOptions editorOptions = new LayoutOptions();
-            editorOptions.addOption("resizable", true);
-            editorOptions.addOption("closable", true);
-            editorOptions.addOption("slidable", true);
-            editorOptions.addOption("size", 180);
+            editorOptions.addOption("resizable", false);
+            editorOptions.addOption("closable", false);
+            editorOptions.addOption("slidable", false);
+            editorOptions.addOption("size", 0);
 
             if (!view.isRegionVisible(LayoutRegion.Mdx)) {
                 editorOptions.addOption("initClosed", true);

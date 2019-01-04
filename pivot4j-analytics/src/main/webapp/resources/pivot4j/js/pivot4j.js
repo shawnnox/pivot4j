@@ -48,7 +48,7 @@ function initializeTabs(tabs) {
 	});
 
 	var activeId = getActiveViewId();
-	var activeIndex = -1;
+	var activeIndex = 0;
 
 	var index = 0;
 	for ( var id in tabs) {
@@ -124,6 +124,30 @@ function getActiveWindow() {
 	return query.get(0).contentWindow;
 }
 
+function exportXls(frame){
+	if (frame.size() == 0) {
+		return;
+	}
+	frame.get(0).contentWindow.PrimeFaces.addSubmitParam("toolbar-form", {
+		"toolbar-form:mi-export-xls" : "toolbar-form:mi-export-xls",
+		"format" : "HSSF"
+	}).submit("toolbar-form");
+}
+
+function exportXlsx(frame){
+	if (frame.size() == 0) {
+		return;
+	}
+	frame.get(0).contentWindow.PrimeFaces.addSubmitParam("toolbar-form", {
+		"toolbar-form:mi-export-xlsx" : "toolbar-form:mi-export-xlsx",
+		"format" : "SXSSF"
+	}).submit("toolbar-form");
+}
+
+function exportSonPdf(frame){
+	frame.get(0).contentWindow.PF('exportConfig').show();
+}
+
 function addTab(tab) {
 	createTab(tab);
 
@@ -162,8 +186,10 @@ function createTab(tab) {
 	link.attr("href", "#view-" + tab.id);
 	link.text(name);
 
-	var button = jQuery(document.createElement("span")).addClass("ui-icon")
-			.addClass("ui-icon-close").on("click", onTabClose);
+	// var button = jQuery(document.createElement("span")).addClass("ui-icon")
+	// 		.addClass("ui-icon-close").on("click", onTabClose);
+	//取消关闭按钮防止页面不再显示
+	var button = jQuery(document.createElement("span"));
 
 	var header = jQuery(document.createElement("li"));
 	header.append(link);

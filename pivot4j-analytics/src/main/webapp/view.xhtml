@@ -19,14 +19,20 @@
 	<h:outputStylesheet library="primefaces"
 		name="colorpicker/colorpicker.css" />
 	<h:outputStylesheet library="pivot4j" name="css/style.css" />
+	<h:outputStylesheet library="pivot4j" name="css/jquery.ui.tabs.css" />
 
 	<h:outputScript library="primefaces" name="printer/printer.js" />
 	<h:outputScript library="primefaces" name="colorpicker/colorpicker.js" />
 	<h:outputScript library="primefaces" name="charts/charts.js" />
+	<!--<h:outputScript library="primefaces" name="primefaces.js" />-->
 	<h:outputStylesheet library="primefaces" name="charts/charts.css" />
 	<h:outputScript library="pivot4j" name="js/colorpicker.js" />
 	<h:outputScript library="pivot4j" name="js/codemirror-mode.js" />
+	<h:outputScript library="pivot4j" name="js/jquery.ui.tabs.js" />
 	<h:outputScript library="pivot4j" name="js/pivot4j.js" />
+	<h:outputScript library="pivot4j" name="js/primefaces.js" />
+
+
 
 	<script type="text/javascript">
 		function initLayout() {
@@ -45,7 +51,29 @@
 				mdxEditor.render();
 			}
 		}
+
+        function exportHSSF() {
+            var selector = jQuery(window.parent.document).find(".ui-tabs-anchor").attr("href");
+            var frame = jQuery(window.parent.document).find(selector).find("iframe");
+            exportXls(frame);
+        }
+
+        function exportSXSSF() {
+
+            var selector = jQuery(window.parent.document).find(".ui-tabs-anchor").attr("href");
+            var frame = jQuery(window.parent.document).find(selector).find("iframe");
+
+            exportXlsx(frame);
+        }
+        function exportPdf(){
+
+            var selector = jQuery(window.parent.document).find(".ui-tabs-anchor").attr("href");
+            var frame = jQuery(window.parent.document).find(selector).find("iframe");
+
+            exportSonPdf(frame);
+        }
 	</script>
+
 </h:head>
 
 <f:metadata>
@@ -59,12 +87,13 @@
 <h:body id="body" styleClass="report">
 	<pe:layout id="workbench" fullPage="true"
 		options="#{viewHandler.layoutOptions}" widgetVar="workbench">
+
 		<pe:layoutPane id="toolbar-pane" position="north"
 			styleClassContent="toolbar-area">
 			<h:form id="toolbar-form">
 				<p:toolbar id="toolbar">
 					<f:facet name="left">
-						<p:selectBooleanButton 
+						<p:selectBooleanButton
 							value="#{viewHandler.editable}"
 							title="#{msg['toolbar.edit.tooltip']}"
 							onLabel="#{msg['toolbar.edit']}"
@@ -150,13 +179,13 @@
 									target="#{viewHandler.drillDownMode}" value="replace" />
 							</p:menuitem>
 							<p:separator />
-							<p:menuitem value="#{msg['toolbar.drill.through']}" 
+							<p:menuitem value="#{msg['toolbar.drill.through']}"
 								title="#{msg['toolbar.drill.through.tooltip']}"
 								icon="#{viewHandler.drillThrough?'ui-icon-check':'ui-icon-none'}"
 								disabled="#{!viewHandler.valid or !pivotStateManager.model.cube.drillThroughEnabled}"
 								update=":toolbar-form,:grid-form,:growl"
 								process="@this"
-								oncomplete="onViewChanged()" 
+								oncomplete="onViewChanged()"
 								action="#{viewHandler.toggleDrillThrough}" />
 						</p:menuButton>
 						<p:selectBooleanButton value="#{viewHandler.scenarioEnabled}"
@@ -181,7 +210,7 @@
 							oncomplete="PF('aggregationConfig').show();"
 							disabled="#{!viewHandler.valid}"
 							rendered="#{viewHandler.editable and viewHandler.visible}" />
-						<p:menuButton id="charts" value="#{msg['label.chart']}"
+						<p:menuButton id="charts" style="display: none" value="#{msg['label.chart']}"
 							disabled="#{!viewHandler.valid}"
 							rendered="#{viewHandler.editable}">
 							<p:menuitem value="(#{msg['label.none']})"
@@ -203,7 +232,7 @@
 								</p:menuitem>
 							</c:forEach>
 							<p:separator />
-							<p:menuitem 
+							<p:menuitem
 								value="#{msg['toolbar.grid.show']}"
 								title="#{msg['toolbar.grid.tooltip']}"
 								icon="#{viewHandler.visible?'ui-icon-check':'ui-icon-none'}"
@@ -216,7 +245,22 @@
 								icon="ui-icon-gear" action="#{chartHandler.reset}"
 								oncomplete="PF('chartConfig').show()" />
 						</p:menuButton>
-						<p:separator rendered="#{viewHandler.editable}" styleClass="hide-on-embed"/>
+
+						<p:menuButton value="#{msg['toolbar.export']}"
+									  styleClass="export-menu">
+							<p:menuitem value="#{msg['toolbar.export.format.xls']}"
+										icon="ui-icon-disk" onclick="exportHSSF();"
+										disabled="#{!workbenchHandler.viewValid}" />
+							<p:menuitem value="#{msg['toolbar.export.format.xlsx']}"
+										icon="ui-icon-disk" onclick="exportSXSSF();"
+										disabled="#{!workbenchHandler.viewValid}" />
+							<p:menuitem value="#{msg['toolbar.export.format.pdf']}"
+										icon="ui-icon-print"
+										onclick="exportPdf();"
+										disabled="#{!workbenchHandler.viewValid}" />
+						</p:menuButton>
+
+						<p:separator/>
 						<p:menuButton value="#{msg['toolbar.export']}"
 							disabled="#{!viewHandler.valid}"
 							styleClass="export-menu hide-on-embed">
@@ -236,17 +280,22 @@
 								value="#{msg['toolbar.export.format.pdf']}" icon="ui-icon-print"
 								onclick="PF('exportConfig').show();" />
 							<p:separator />
-							<p:menuitem 
-								value="#{msg['toolbar.print']}" title="#{msg['toolbar.print.tooltip']}" 
+							<p:menuitem
+								value="#{msg['toolbar.print']}" title="#{msg['toolbar.print.tooltip']}"
 								icon="ui-icon-print" onclick="$('table.pivot-grid:first').jqprint();" />
 						</p:menuButton>
+						<p:separator
+								rendered="#{viewHandler.editable and viewHandler.visible}" />
+						<p:commandButton
+								value="#{msg['toolbar.print']}" title="#{msg['toolbar.print.tooltip']}"
+								icon="ui-icon-print" onclick="$('table.pivot-grid:first').jqprint();" />
 					</f:facet>
 				</p:toolbar>
 			</h:form>
 		</pe:layoutPane>
 
 		<pe:layoutPane id="navigator-pane" position="west"
-			rendered="#{viewHandler.editable}">
+			rendered="false">
 			<f:facet name="header">
 				<h:panelGroup layout="block">
 					<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-search" />
@@ -406,8 +455,8 @@
 				</h:panelGroup>
 			</f:facet>
 
-			<pe:layoutPane id="grid-header-pane" position="north"
-				rendered="#{viewHandler.editable}">
+			<pe:layoutPane id="grid-header-pane" styleClassContent="filterTestClass" position="north"
+				rendered="false">
 				<h:form id="filter-items-form">
 					<h:panelGrid id="filter-panel" styleClass="filter-panel"
 						columns="3"
@@ -476,7 +525,7 @@
 				</h:panelGroup>
 			</pe:layoutPane>
 
-			<pe:layoutPane id="grid-content-pane" position="center">
+			<pe:layoutPane id="grid-content-pane" fullpage="false" position="center">
 				<h:form id="grid-form" onkeypress="return event.keyCode != 13;">
 					<h:panelGroup id="pivot-grid" binding="#{viewHandler.component}"
 						layout="block"
@@ -507,8 +556,8 @@
 				</h:form>
 			</pe:layoutPane>
 
-			<pe:layoutPane id="mdx-editor-pane" position="south"
-				rendered="#{viewHandler.editable}">
+			<pe:layoutPane id="mdx-editor-pane" fullpage="false" position="south"
+				rendered="false">
 				<f:facet name="header">
 					<h:panelGroup layout="block">
 						<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-script" />

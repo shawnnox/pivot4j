@@ -41,13 +41,20 @@
 			}).submit("toolbar-form");
 		}
 	</script>
+
+
+
 </h:head>
+
+<f:metadata>
+	<f:viewParam name="userId" value="#{repositoryHandler.userId}"/>
+</f:metadata>
 
 <h:body id="body">
 	<pe:layout id="workbench" fullPage="true"
 		options="#{workbenchHandler.layoutOptions}"
 		widgetVar="workbench">
-		<pe:layoutPane id="toolbar-pane" position="north"
+		<pe:layoutPane id="toolbar-pane" position="north" rendered="false"
 			styleClassContent="toolbar-area">
 			<h:form id="toolbar-form">
 				<p:toolbar id="toolbar">
@@ -85,13 +92,13 @@
 						<p:separator />
 						<p:menuButton value="#{msg['toolbar.export']}"
 							styleClass="export-menu">
-							<p:menuitem value="#{msg['toolbar.export.format.xls']}"
+							<p:menuitem id="exportXls" styleClass="exportXls" value="#{msg['toolbar.export.format.xls']}"
 								icon="ui-icon-disk" onclick="exportHSSF();"
 								disabled="#{!workbenchHandler.viewValid}" />
-							<p:menuitem value="#{msg['toolbar.export.format.xlsx']}"
+							<p:menuitem id="exportXlsx" value="#{msg['toolbar.export.format.xlsx']}"
 								icon="ui-icon-disk" onclick="exportSXSSF();"
 								disabled="#{!workbenchHandler.viewValid}" />
-							<p:menuitem value="#{msg['toolbar.export.format.pdf']}"
+							<p:menuitem id="exportPdf" value="#{msg['toolbar.export.format.pdf']}"
 								icon="ui-icon-print"
 								onclick="getActiveWindow().PF('exportConfig').show();"
 								disabled="#{!workbenchHandler.viewValid}" />
@@ -121,15 +128,15 @@
 								target="_blank" />
 						</p:menuButton>
 						<p:separator />
-						<p:commandButton value="#{msg['toolbar.about']}"
-							title="#{msg['toolbar.about.tooltip']}" type="button"
-							icon="ui-icon-info" onclick="PF('about').show(); return false;" />
+						<!--<p:commandButton value="#{msg['toolbar.about']}"-->
+							<!--title="#{msg['toolbar.about.tooltip']}" type="button"-->
+							<!--icon="ui-icon-info" onclick="PF('about').show(); return false;" />-->
 					</f:facet>
 				</p:toolbar>
 			</h:form>
 		</pe:layoutPane>
 
-		<pe:layoutPane id="navigator-pane" position="west">
+		<pe:layoutPane id="navigator-pane" position="west" rendered="false">
 			<f:facet name="header">
 				<h:panelGroup layout="block">
 					<h:panelGroup styleClass="ui-icon ui-icon-title ui-icon-search" />
@@ -337,8 +344,16 @@
 		<p:remoteCommand name="onPageLoad" autoRun="true"
 			action="#{repositoryHandler.loadReports}"
 			oncomplete="initializeTabs(args)" />
-	</h:form>
 
+		<!--<h:inputText id="test" value="asdasd"/>-->
+
+		<h:inputText id="userId" value="#{repositoryHandler.userId}" />
+
+		<!--<h:commandLink value="Test2" action="#{paramBean.test}">-->
+			<!--<f:param name="name" value="zhang"></f:param>-->
+			<!--<f:param name="id" value="123456"></f:param>-->
+		<!--</h:commandLink>-->
+	</h:form>
 	<p:ajaxStatus styleClass="ajax-status" onstart="showWaitDialog();"
 		oncomplete="hideWaitDialog();" />
 

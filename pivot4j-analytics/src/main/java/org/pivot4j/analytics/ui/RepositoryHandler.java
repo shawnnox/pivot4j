@@ -1,18 +1,24 @@
 package org.pivot4j.analytics.ui;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
+import org.pivot4j.analytics.component.tree.DefaultTreeNode;
+import org.pivot4j.analytics.config.Settings;
+import org.pivot4j.analytics.datasource.DataSourceManager;
+import org.pivot4j.analytics.repository.*;
+import org.pivot4j.analytics.repository.file.LocalFile;
+import org.pivot4j.analytics.state.ViewState;
+import org.pivot4j.analytics.state.ViewStateEvent;
+import org.pivot4j.analytics.state.ViewStateHolder;
+import org.pivot4j.analytics.state.ViewStateListener;
+import org.pivot4j.analytics.ui.navigator.RepositoryNode;
+import org.pivot4j.analytics.util.HttpClientResult;
+import org.pivot4j.analytics.util.HttpClientUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.json.JSONObject;
+import org.primefaces.model.TreeNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -22,28 +28,12 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
-import org.pivot4j.analytics.component.tree.DefaultTreeNode;
-import org.pivot4j.analytics.config.Settings;
-import org.pivot4j.analytics.datasource.DataSourceManager;
-import org.pivot4j.analytics.repository.DataSourceNotFoundException;
-import org.pivot4j.analytics.repository.ReportContent;
-import org.pivot4j.analytics.repository.ReportFile;
-import org.pivot4j.analytics.repository.ReportRepository;
-import org.pivot4j.analytics.repository.RepositoryFileComparator;
-import org.pivot4j.analytics.repository.RepositoryFileFilter;
-import org.pivot4j.analytics.state.ViewState;
-import org.pivot4j.analytics.state.ViewStateEvent;
-import org.pivot4j.analytics.state.ViewStateHolder;
-import org.pivot4j.analytics.state.ViewStateListener;
-import org.pivot4j.analytics.ui.navigator.RepositoryNode;
-import org.primefaces.context.RequestContext;
-import org.primefaces.json.JSONObject;
-import org.primefaces.model.TreeNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @ManagedBean(name = "repositoryHandler")
 @SessionScoped
@@ -74,6 +64,16 @@ public class RepositoryHandler implements ViewStateListener, Serializable {
 	private String reportName;
 
 	private String folderName;
+
+	private String userId;
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	@PostConstruct
 	protected void initialize() {
@@ -108,14 +108,59 @@ public class RepositoryHandler implements ViewStateListener, Serializable {
 		this.repository = repository;
 	}
 
-	public void loadReports() {
-		RequestContext context = RequestContext.getCurrentInstance();
+	public void loadReports(){
 
-		List<ViewState> states = viewStateHolder.getStates();
 
-		for (ViewState state : states) {
-			context.addCallbackParam(state.getId(), new JSONObject(new ViewInfo(state)));
+		//TODO 发送http请求到x服务获取自定义文件地址
+		String fileDir = getFileFormHttp(userId);
+//		HttpServletRequest request = (HttpServletRequest)FacesContext.getCurrentInstance().getExternalContext().getRequest();
+//		Map map = request.getParameterMap();
+//		Map varMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+
+		//TODO 在此处自定义文件
+		RepositoryNode repositoryNode = new RepositoryNode();
+		LocalFile localFile;
+		try {
+			localFile = new LocalFile(new File(fileDir),new File("/Users/shawnnox/.pivot4j/repository"));
+			repositoryNode.setObject(localFile);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+		selection = repositoryNode;
+
+		open();
+
+		//原代码
+//		RequestContext context = RequestContext.getCurrentInstance();
+//
+//		List<ViewState> states = viewStateHolder.getStates();
+//
+//
+//		for (ViewState state : states) {
+//			context.addCallbackParam(state.getId(), new JSONObject(new ViewInfo(state)));
+//		}
+	}
+
+	/**
+	 * 根据userId发送http请求获取文件地址
+	 * @param userId		用户Id
+	 * @return				dir
+	 */
+	private String getFileFormHttp(String userId){
+		try{
+			Map<String,String> map = new HashMap<>(16);
+			map.put("userId",userId);
+			HttpClientResult httpClientResult = HttpClientUtils.doGet("http://localhost:8090/user/getUser",map);
+			if(httpClientResult.getCode()!= 200){
+				return "";
+			}else{
+				com.alibaba.fastjson.JSONObject jsonObject = com.alibaba.fastjson.JSONObject.parseObject(httpClientResult.getContent());
+				return (String) jsonObject.get("fileDir");
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return "";
 	}
 
 	public void create() {
@@ -231,9 +276,8 @@ public class RepositoryHandler implements ViewStateListener, Serializable {
 			return;
 		}
 
-		requestContext.update(Arrays.asList(new String[] {
-				"toolbar-form:toolbar", "repository-form:repository-panel",
-				"growl" }));
+		requestContext.update(Arrays.asList("toolbar-form:toolbar", "repository-form:repository-panel",
+				"growl"));
 
 		try {
 			repository.setReportContent(file, new ReportContent(state));
@@ -407,6 +451,8 @@ public class RepositoryHandler implements ViewStateListener, Serializable {
 
 			return;
 		}
+
+		selection.setSelected(true);
 
 		FacesContext context = FacesContext.getCurrentInstance();
 		ResourceBundle bundle = context.getApplication().getResourceBundle(

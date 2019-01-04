@@ -35,14 +35,15 @@ public class WorkbenchHandler {
 			toolbarOptions.addOption("resizable", false);
 			toolbarOptions.addOption("resizable", false);
 			toolbarOptions.addOption("closable", false);
+			toolbarOptions.addOption("size", 0);
 
 			layoutOptions.setNorthOptions(toolbarOptions);
 
 			LayoutOptions navigatorOptions = new LayoutOptions();
-			navigatorOptions.addOption("resizable", true);
-			navigatorOptions.addOption("closable", true);
-			navigatorOptions.addOption("slidable", true);
-			navigatorOptions.addOption("size", 200);
+			navigatorOptions.addOption("resizable", false);
+			navigatorOptions.addOption("closable", false);
+			navigatorOptions.addOption("slidable", false);
+			navigatorOptions.addOption("size", 0);
 
 			layoutOptions.setWestOptions(navigatorOptions);
 

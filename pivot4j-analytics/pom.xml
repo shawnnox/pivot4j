@@ -19,6 +19,7 @@
 		<web.test.port>9090</web.test.port>
 		<derby.home>${project.build.directory}/${project.artifactId}-${project.version}/WEB-INF</derby.home>
 		<skip.test>true</skip.test>
+		<mysql-driver.version>5.1.46</mysql-driver.version>
 	</properties>
 	<build>
 		<plugins>
@@ -347,6 +348,37 @@
 			<version>${version.derby}</version>
 			<scope>test</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-driver.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>3.12.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.4.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.54</version>
+		</dependency>
+
 		<dependency>
 			<groupId>pentaho</groupId>
 			<artifactId>mondrian</artifactId>
@@ -365,6 +397,7 @@
 					<groupId>log4j</groupId>
 				</exclusion>
 			</exclusions>
+
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.shrinkwrap.resolver</groupId>
@@ -443,6 +476,12 @@
 			<artifactId>org.jacoco.core</artifactId>
 			<scope>test</scope>
 			<version>${version.jacoco}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>4.4.10</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 

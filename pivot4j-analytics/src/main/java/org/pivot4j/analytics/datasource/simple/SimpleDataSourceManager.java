@@ -1,15 +1,5 @@
 package org.pivot4j.analytics.datasource.simple;
 
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.faces.FacesException;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
-
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang.NullArgumentException;
 import org.olap4j.OlapConnection;
@@ -20,6 +10,15 @@ import org.pivot4j.analytics.datasource.AbstractDataSourceManager;
 import org.pivot4j.analytics.datasource.CatalogInfo;
 import org.pivot4j.analytics.datasource.CubeInfo;
 import org.pivot4j.datasource.SimpleOlapDataSource;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.faces.FacesException;
+import javax.faces.bean.ApplicationScoped;
+import javax.faces.bean.ManagedBean;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
 
 @ManagedBean(name = "dataSourceManager")
 @ApplicationScoped

@@ -9,7 +9,7 @@
 		</resource-bundle>
 		<message-bundle>org.pivot4j.analytics.i18n.messages</message-bundle>
 		<locale-config>
-			<default-locale>en</default-locale>
+			<default-locale>zh_CN</default-locale>
 			<supported-locale>en</supported-locale>
 			<supported-locale>ko</supported-locale>
 			<supported-locale>pt</supported-locale>
@@ -22,6 +22,7 @@
 			<supported-locale>nl</supported-locale>
 			<supported-locale>it</supported-locale>
 			<supported-locale>ru</supported-locale>
+			<supported-locale>zh_CN</supported-locale>
 		</locale-config>
 	</application>
 
