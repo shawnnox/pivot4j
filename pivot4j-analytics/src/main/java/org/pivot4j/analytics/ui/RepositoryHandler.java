@@ -35,11 +35,24 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * @author mysticfall
+ */
 @ManagedBean(name = "repositoryHandler")
 @SessionScoped
 public class RepositoryHandler implements ViewStateListener, Serializable {
 
 	private static final long serialVersionUID = -860723075484210684L;
+
+	/**
+	 * .pivot4j 配置文件根目录
+	 */
+	private static final String ROOTDIR = "/Users/shawnnox/.pivot4j/repository";
+
+	/**
+	 * 请求服务获取文件目录
+	 */
+	private static final String REQURL = "http://localhost:8090/user/getUser";
 
 	private Logger log = LoggerFactory.getLogger(getClass());
 
@@ -121,7 +134,7 @@ public class RepositoryHandler implements ViewStateListener, Serializable {
 		RepositoryNode repositoryNode = new RepositoryNode();
 		LocalFile localFile;
 		try {
-			localFile = new LocalFile(new File(fileDir),new File("/Users/shawnnox/.pivot4j/repository"));
+			localFile = new LocalFile(new File(fileDir),new File(ROOTDIR));
 			repositoryNode.setObject(localFile);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -150,7 +163,7 @@ public class RepositoryHandler implements ViewStateListener, Serializable {
 		try{
 			Map<String,String> map = new HashMap<>(16);
 			map.put("userId",userId);
-			HttpClientResult httpClientResult = HttpClientUtils.doGet("http://localhost:8090/user/getUser",map);
+			HttpClientResult httpClientResult = HttpClientUtils.doGet(REQURL,map);
 			if(httpClientResult.getCode()!= 200){
 				return "";
 			}else{
